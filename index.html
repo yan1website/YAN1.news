@@ -41,22 +41,72 @@
 
         body {
             margin: 0;
-            width: 100%;
-            height: 100vh;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            background: #000;
-            color: #fff;
-
+            min-height: 100vh;
+            background: #f1f3f4;
+            color: #202124;
             font-family: Arial, sans-serif;
         }
 
-        #loading {
-            font-size: 20px;
-            letter-spacing: 3px;
+        .folder-picker {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        .folder-control {
+            display: grid;
+            flex: 1;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        select,
+        button {
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #aeb4b8;
+            border-radius: 4px;
+            background: #fff;
+            color: inherit;
+            font: inherit;
+        }
+
+        button {
+            border-color: #176b58;
+            background: #176b58;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        button:hover {
+            background: #105342;
+        }
+
+        #folder-view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            border: 0;
+            background: #fff;
+        }
+
+        @media (max-width: 520px) {
+            .folder-picker {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 10px;
+                padding: 16px;
+            }
+
         }
     </style>
 </head>
@@ -64,10 +114,18 @@
 
 <body>
 
-    <div id="loading">
-        LOADING...
-    </div>
-
+    <main>
+        <form class="folder-picker" id="folder-picker">
+            <div class="folder-control">
+                <label for="folder-select">Select a folder</label>
+                <select id="folder-select" required>
+                    <option value="">Choose a folder...</option>
+                </select>
+            </div>
+            <button type="submit">Open folder</button>
+        </form>
+        <iframe id="folder-view" title="Selected folder contents"></iframe>
+    </main>
 
     <script>
 
@@ -82,29 +140,76 @@
             "LEMMY",
             "REDDIT",
             "THE GUARDIAN",
-            "AI JAZEERA"
+            "Al JAZEERA",
+            "NDTV"
 
         ];
 
 
-        // ============================================
-        // RANDOMLY SELECT ONE FOLDER
-        // ============================================
+        const folderSelect = document.getElementById("folder-select");
+        const folderPicker = document.getElementById("folder-picker");
+        const folderView = document.getElementById("folder-view");
+        let folderResizeObserver;
 
-        const randomIndex =
-            Math.floor(Math.random() * folders.length);
+        folders.forEach(folder => {
+            const option = document.createElement("option");
+            option.value = folder;
+            option.textContent = folder;
+            folderSelect.appendChild(option);
+        });
 
-        const selectedFolder =
-            folders[randomIndex];
+        window.onPythonResult = function(output, callbackId) {
+            const folderPage = folderView.contentWindow;
+            if (typeof folderPage.onPythonResult === "function") {
+                folderPage.onPythonResult(output, callbackId);
+            }
+        };
 
+        window.onPythonError = function(errorMessage, callbackId) {
+            const folderPage = folderView.contentWindow;
+            if (typeof folderPage.onPythonError === "function") {
+                folderPage.onPythonError(errorMessage, callbackId);
+            }
+        };
 
-        // ============================================
-        // OPEN THE INDEX.HTML INSIDE THAT FOLDER
-        // ============================================
+        function resizeFolderView() {
+            const folderDocument = folderView.contentDocument;
+            if (!folderDocument) return;
 
-        window.location.replace(
-            "./" + selectedFolder + "/index.html"
-        );
+            const contentHeight = Math.max(
+                folderDocument.documentElement.scrollHeight,
+                folderDocument.body ? folderDocument.body.scrollHeight : 0
+            );
+            folderView.style.height = contentHeight + "px";
+        }
+
+        folderView.addEventListener("load", () => {
+            folderResizeObserver?.disconnect();
+            const folderDocument = folderView.contentDocument;
+            if (!folderDocument) return;
+
+            folderResizeObserver = new ResizeObserver(resizeFolderView);
+            folderResizeObserver.observe(folderDocument.documentElement);
+            if (folderDocument.body) {
+                folderResizeObserver.observe(folderDocument.body);
+            }
+            resizeFolderView();
+        });
+
+        function openSelectedFolder() {
+            if (!folderSelect.value) return;
+
+            folderView.src = "./" + encodeURIComponent(folderSelect.value) + "/index.html";
+            folderView.style.display = "block";
+        }
+
+        folderPicker.addEventListener("submit", event => {
+            event.preventDefault();
+            openSelectedFolder();
+        });
+
+        folderSelect.value = folders[Math.floor(Math.random() * folders.length)];
+        openSelectedFolder();
 
     </script>
 

@@ -439,6 +439,41 @@
             color: #666;
         }
 
+        @media (max-width: 600px) {
+            #status,
+            #error {
+                margin-left: 0;
+                margin-right: 0;
+                border-left: 0;
+                border-right: 0;
+                border-radius: 0;
+            }
+
+            #posts {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .post {
+                width: 100%;
+                margin-bottom: 0;
+                padding: 18px 16px;
+                border-radius: 0;
+                box-shadow: none;
+                border-bottom: 1px solid #ddd;
+                border-left: 0;
+                border-right: 0;
+            }
+
+            .post-image {
+                width: calc(100% + 32px);
+                max-width: none;
+                margin-left: -16px;
+                border-radius: 0;
+            }
+        }
 
     </style>
 

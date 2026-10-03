@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python App Runner</title>
+    <title>BBC News</title>
 
     <script>
         function isYAN1App() {
@@ -158,14 +158,56 @@
         .category-row .category-btn {
             margin-right: 0;
         }
+
+        @media (max-width: 600px) {
+            body {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .box {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 16px 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .box > h3,
+            #status,
+            .category-row {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+
+            .news-card {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 16px;
+                border-left: 0;
+                border-right: 0;
+            }
+
+            .news-card img {
+                width: calc(100% + 32px);
+                margin-left: -16px;
+            }
+
+            .news-list,
+            #output {
+                width: 100%;
+                box-sizing: border-box;
+                border-left: 0;
+                border-right: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
 
 <div class="box">
-
-    <h2>Python App Runner</h2>
 
     <div id="status">
         Connecting to app...
@@ -184,7 +226,7 @@
         <button class="category-btn" onclick="runPython('entertainment', 'python8.py')">Entertainment</button>
     </div>
 
-    <h3>Python Output</h3>
+    <h3>Latest News</h3>
 
     <div id="output">
         Waiting...

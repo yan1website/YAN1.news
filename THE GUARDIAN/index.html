@@ -139,6 +139,45 @@
             font-size: 13px;
         }
 
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                width: 100%;
+                box-sizing: border-box;
+                max-width: none;
+                margin: 0;
+                padding: 16px 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .container > h1,
+            .categories,
+            #status {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+
+            .article {
+                width: 100%;
+                box-sizing: border-box;
+                margin-left: 0;
+                margin-right: 0;
+                padding: 20px 0;
+                border-inline: 0;
+            }
+
+            .article-image {
+                width: 100%;
+                max-width: none;
+                margin-left: 0;
+                border-radius: 0;
+            }
+        }
+
     </style>
 
 </head>
